@@ -83,7 +83,10 @@ describe('WaitingListService Unit & Integration Tests', () => {
     const appService = new ApplicationService(uow, domainEventManager);
 
     const customerRepo = new CustomerMysqlRepository(em);
-    const customer = Customer.create({ name: 'Customer 1', cpf: '70375887091' });
+    const customer = Customer.create({
+      name: 'Customer 1',
+      cpf: '70375887091',
+    });
     await customerRepo.add(customer);
     await uow.commit();
 
@@ -115,7 +118,10 @@ describe('WaitingListService Unit & Integration Tests', () => {
 
     const partner = Partner.create({ name: 'Partner 1' });
     await partnerRepo.add(partner);
-    const customer = Customer.create({ name: 'Customer 1', cpf: '70375887091' });
+    const customer = Customer.create({
+      name: 'Customer 1',
+      cpf: '70375887091',
+    });
     await customerRepo.add(customer);
 
     const event = partner.initEvent({
@@ -154,7 +160,10 @@ describe('WaitingListService Unit & Integration Tests', () => {
 
     const partner = Partner.create({ name: 'Partner 1' });
     await partnerRepo.add(partner);
-    const customer = Customer.create({ name: 'Customer 1', cpf: '70375887091' });
+    const customer = Customer.create({
+      name: 'Customer 1',
+      cpf: '70375887091',
+    });
     await customerRepo.add(customer);
 
     const event = partner.initEvent({
@@ -201,7 +210,10 @@ describe('WaitingListService Unit & Integration Tests', () => {
 
     const partner = Partner.create({ name: 'Partner 1' });
     await partnerRepo.add(partner);
-    const customer = Customer.create({ name: 'Customer 1', cpf: '70375887091' });
+    const customer = Customer.create({
+      name: 'Customer 1',
+      cpf: '70375887091',
+    });
     await customerRepo.add(customer);
 
     const event = partner.initEvent({
@@ -219,7 +231,10 @@ describe('WaitingListService Unit & Integration Tests', () => {
 
     // Reserva o único lugar
     const section = event.sections[0];
-    event.markSpotAsReserved({ section_id: section.id, spot_id: section.spots[0].id });
+    event.markSpotAsReserved({
+      section_id: section.id,
+      spot_id: section.spots[0].id,
+    });
     await eventRepo.add(event);
     await uow.commit();
 

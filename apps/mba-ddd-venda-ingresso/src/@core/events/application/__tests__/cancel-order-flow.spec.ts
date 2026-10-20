@@ -84,9 +84,12 @@ describe('Cancel Order Flow - End to End In-Process Test', () => {
       spotReservationRepo,
       domainEventManager,
     );
-    domainEventManager.register(OrderCancelled.name, async (event: OrderCancelled) => {
-      await orderCancelledHandler.handle(event);
-    });
+    domainEventManager.register(
+      OrderCancelled.name,
+      async (event: OrderCancelled) => {
+        await orderCancelledHandler.handle(event);
+      },
+    );
 
     const eventSpotReleasedHandler = new EventSpotReleasedHandler(
       waitingListRepo,
@@ -131,8 +134,14 @@ describe('Cancel Order Flow - End to End In-Process Test', () => {
     await partnerRepo.add(partner);
 
     // 2. Criar Clientes A e B
-    const customerA = Customer.create({ name: 'Cliente A', cpf: '70375887091' });
-    const customerB = Customer.create({ name: 'Cliente B', cpf: '99346413050' });
+    const customerA = Customer.create({
+      name: 'Cliente A',
+      cpf: '70375887091',
+    });
+    const customerB = Customer.create({
+      name: 'Cliente B',
+      cpf: '99346413050',
+    });
     await customerRepo.add(customerA);
     await customerRepo.add(customerB);
 

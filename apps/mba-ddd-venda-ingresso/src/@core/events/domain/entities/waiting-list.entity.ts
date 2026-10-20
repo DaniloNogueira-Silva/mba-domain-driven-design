@@ -55,7 +55,9 @@ export class WaitingList extends AggregateRoot {
     return new WaitingList(props);
   }
 
-  addEntry(command: CustomerId | { customer_id: CustomerId | string }): WaitingListEntry {
+  addEntry(
+    command: CustomerId | { customer_id: CustomerId | string },
+  ): WaitingListEntry {
     const customerId =
       command instanceof CustomerId
         ? command

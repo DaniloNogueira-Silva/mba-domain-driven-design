@@ -57,8 +57,14 @@ describe('WaitingListMysqlRepository Integration Tests', () => {
     const partner = Partner.create({ name: 'Partner 1' });
     await partnerRepo.add(partner);
 
-    const customer1 = Customer.create({ name: 'Customer 1', cpf: '11111111111' });
-    const customer2 = Customer.create({ name: 'Customer 2', cpf: '22222222222' });
+    const customer1 = Customer.create({
+      name: 'Customer 1',
+      cpf: '11111111111',
+    });
+    const customer2 = Customer.create({
+      name: 'Customer 2',
+      cpf: '22222222222',
+    });
     await customerRepo.add(customer1);
     await customerRepo.add(customer2);
 
@@ -116,7 +122,10 @@ describe('WaitingListMysqlRepository Integration Tests', () => {
     const partner = Partner.create({ name: 'Partner 1' });
     await partnerRepo.add(partner);
 
-    const customer = Customer.create({ name: 'Customer 1', cpf: '33333333333' });
+    const customer = Customer.create({
+      name: 'Customer 1',
+      cpf: '33333333333',
+    });
     await customerRepo.add(customer);
 
     const event = partner.initEvent({

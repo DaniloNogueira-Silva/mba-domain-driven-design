@@ -196,8 +196,7 @@ import { SpotOfferedToWaitingCustomerIntegrationEvent } from '../@core/events/do
       useFactory: (
         waitingListRepo: IWaitingListRepository,
         domainEventManager: DomainEventManager,
-      ) =>
-        new EventSpotReleasedHandler(waitingListRepo, domainEventManager),
+      ) => new EventSpotReleasedHandler(waitingListRepo, domainEventManager),
       inject: ['IWaitingListRepository', DomainEventManager],
     },
   ],

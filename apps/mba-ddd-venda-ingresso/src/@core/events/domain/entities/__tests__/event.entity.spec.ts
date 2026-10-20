@@ -132,8 +132,8 @@ describe('Event Entity Unit Tests', () => {
     const [section] = event.sections;
     const [spot1] = section.spots;
 
-    expect(() =>
-      event.markSpotAsAvailable({ spot_id: spot1.id }),
-    ).toThrow('Spot not reserved');
+    expect(() => event.markSpotAsAvailable({ spot_id: spot1.id })).toThrow(
+      'Spot not reserved',
+    );
   });
 });
