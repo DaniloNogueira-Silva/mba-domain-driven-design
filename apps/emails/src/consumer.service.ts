@@ -17,4 +17,25 @@ export class ConsumerService {
     // }
     console.log('ConsumerService.handle', msg);
   }
+
+  @RabbitSubscribe({
+    exchange: 'amq.direct',
+    routingKey: 'SpotOfferedToWaitingCustomerIntegrationEvent',
+    queue: 'emails-spot-offered',
+  })
+  handleSpotOffered(msg: {
+    event_name: string;
+    payload: {
+      customer_id: string;
+      event_id: string;
+      section_id: string;
+      spot_id: string;
+    };
+    [key: string]: any;
+  }) {
+    console.log(
+      `[ConsumerService] Spot offered to customer ${msg?.payload?.customer_id} on section ${msg?.payload?.section_id}`,
+      msg,
+    );
+  }
 }

@@ -49,5 +49,10 @@ test('Event repository', async () => {
   const eventFound = await eventRepo.findById(event.id);
   console.log(eventFound);
 
+  const spot = event.sections[0].spots[0];
+  const eventFoundBySpot = await eventRepo.findBySpotId(spot.id);
+  expect(eventFoundBySpot).not.toBeNull();
+  expect(eventFoundBySpot.id.equals(event.id)).toBe(true);
+
   await orm.close();
 });

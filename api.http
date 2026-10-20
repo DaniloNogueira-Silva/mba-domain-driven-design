@@ -28,7 +28,19 @@ Content-Type: application/json
 }
 
 ###
-@customer_id = 61f0ff6e-0bb1-4635-8899-4b88ce46975b
+@customer_a_id = 61f0ff6e-0bb1-4635-8899-4b88ce46975b
+
+###
+POST http://localhost:3000/customers
+Content-Type: application/json
+
+{
+    "name": "Customer 2 (B)",
+    "cpf": "703.758.870-91"
+}
+
+###
+@customer_b_id = 89a66217-a5f3-4d03-bae3-8cdbe765b98b
 
 ###
 GET http://localhost:3000/events
@@ -80,7 +92,10 @@ Content-Type: application/json
 GET http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/spots
 
 ###
-PUT http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/spots/2179f4e2-b3bc-4be9-b55d-f0876f24987d
+@spot_id = 96298e63-5a38-4352-b97d-322259f10921
+
+###
+PUT http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/spots/{{spot_id}}
 Content-Type: application/json
 
 {
@@ -90,13 +105,36 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/events/{{event_id}}/orders
 
-###
+### Comprar o único lugar com o cliente A (a seção esgota)
 POST http://localhost:3000/events/{{event_id}}/orders
 Content-Type: application/json
 
 {
-    "customer_id": "{{customer_id}}",
+    "customer_id": "{{customer_a_id}}",
     "section_id": "{{section_id}}",
-    "spot_id": "96298e63-5a38-4352-b97d-322259f10921",
+    "spot_id": "{{spot_id}}",
     "card_token": "tok_visa"
 }
+
+###
+@order_id = 9a3b2ae5-b4ed-438d-89fc-e1a4b42372ba
+
+### Entrar na fila da seção com o cliente B (seção esgotada)
+POST http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/waiting-list
+Content-Type: application/json
+
+{
+    "customer_id": "{{customer_b_id}}"
+}
+
+### Consultar a fila da seção (deve exibir a entrada do cliente B como PENDING)
+GET http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/waiting-list
+
+### Cancelar o pedido do cliente A
+POST http://localhost:3000/events/{{event_id}}/orders/{{order_id}}/cancel
+
+### Verificar lugares da seção (o spot deve voltar a estar disponível / reserved: false)
+GET http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/spots
+
+### Consultar a fila da seção após cancelamento (entrada do cliente B deve estar NOTIFIED)
+GET http://localhost:3000/events/{{event_id}}/sections/{{section_id}}/waiting-list

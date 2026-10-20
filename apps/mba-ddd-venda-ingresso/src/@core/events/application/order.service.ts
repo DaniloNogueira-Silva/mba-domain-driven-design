@@ -1,4 +1,5 @@
 import { IUnitOfWork } from '../../common/application/unit-of-work.interface';
+import { ApplicationService } from '../../common/application/application.service';
 import { EventSectionId } from '../domain/entities/event-section';
 import { EventSpotId } from '../domain/entities/event-spot';
 import { Order } from '../domain/entities/order.entity';
@@ -16,11 +17,37 @@ export class OrderService {
     private eventRepo: IEventRepository,
     private spotReservationRepo: ISpotReservationRepository,
     private uow: IUnitOfWork,
-    private paymentGateway: PaymentGateway,
+    private paymentGateway?: PaymentGateway,
+    private applicationService?: ApplicationService,
   ) {}
 
   list() {
     return this.orderRepo.findAll();
+  }
+
+  async cancel(order_id: string) {
+    const runInApp = this.applicationService
+      ? (cb: () => Promise<any>) => this.applicationService.run(cb)
+      : async (cb: () => Promise<any>) => {
+          return this.uow.runTransaction(async () => {
+            const res = await cb();
+            await this.uow.commit();
+            return res;
+          });
+        };
+
+    return runInApp(async () => {
+      const order = await this.orderRepo.findById(order_id);
+
+      if (!order) {
+        throw new Error('Order not found');
+      }
+
+      order.cancel();
+
+      await this.orderRepo.add(order);
+      return order;
+    });
   }
 
   async create(input: {

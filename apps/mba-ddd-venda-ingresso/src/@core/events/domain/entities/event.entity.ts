@@ -19,6 +19,7 @@ import { EventAddedSection } from '../events/domain-events/event-added-section.e
 import { EventChangedSectionSection } from '../events/domain-events/event-changed-section-information.event';
 import { EventChangedSpotLocation } from '../events/domain-events/event-changed-spot-location.event';
 import { EventMarkedSportAsReserved } from '../events/domain-events/event-marked-sport-as-reserved.event';
+import { EventSpotReleased } from '../events/domain-events/event-spot-released.event';
 
 export class EventId extends Uuid {}
 
@@ -225,6 +226,24 @@ export class Event extends AggregateRoot {
     this.addEvent(
       new EventMarkedSportAsReserved(this.id, section.id, command.spot_id),
     );
+  }
+
+  markSpotAsAvailable(command: { spot_id: EventSpotId }) {
+    const spotId =
+      command.spot_id instanceof EventSpotId
+        ? command.spot_id
+        : new EventSpotId(command.spot_id);
+
+    const section = this.sections.find((section) =>
+      Boolean(section.spots.find((spot) => spot.id.equals(spotId))),
+    );
+
+    if (!section) {
+      throw new Error('Spot not found');
+    }
+
+    section.markSpotAsAvailable(spotId);
+    this.addEvent(new EventSpotReleased(this.id, section.id, spotId));
   }
 
   get sections(): ICollection<EventSection> {

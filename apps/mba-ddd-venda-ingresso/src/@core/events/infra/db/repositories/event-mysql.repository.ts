@@ -1,5 +1,6 @@
 import { EntityManager } from '@mikro-orm/mysql';
 import { Event, EventId } from '../../../domain/entities/event.entity';
+import { EventSpotId } from '../../../domain/entities/event-spot';
 import { IEventRepository } from '../../../domain/repositories/event-repository.interface';
 
 export class EventMysqlRepository implements IEventRepository {
@@ -21,5 +22,19 @@ export class EventMysqlRepository implements IEventRepository {
 
   async delete(entity: Event): Promise<void> {
     await this.entityManager.remove(entity);
+  }
+
+  async findBySpotId(spotId: string | EventSpotId): Promise<Event | null> {
+    return this.entityManager.findOne(Event, {
+      sections: {
+        spots: {
+          id: typeof spotId === 'string' ? new EventSpotId(spotId) : spotId,
+        },
+      },
+    } as any);
+  }
+
+  async findByEventSpotId(spotId: string | EventSpotId): Promise<Event | null> {
+    return this.findBySpotId(spotId);
   }
 }

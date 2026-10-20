@@ -19,6 +19,7 @@ export type OrderConstructorProps = {
   customer_id: CustomerId;
   amount: number;
   event_spot_id: EventSpotId;
+  status?: OrderStatus;
 };
 
 export class Order extends AggregateRoot {
@@ -43,6 +44,9 @@ export class Order extends AggregateRoot {
       props.event_spot_id instanceof EventSpotId
         ? props.event_spot_id
         : new EventSpotId(props.event_spot_id);
+    if (props.status !== undefined) {
+      this.status = props.status;
+    }
   }
 
   static create(props: OrderConstructorProps) {
@@ -65,8 +69,13 @@ export class Order extends AggregateRoot {
   }
 
   cancel() {
+    if (this.status === OrderStatus.CANCELLED) {
+      throw new Error('Order already cancelled');
+    }
     this.status = OrderStatus.CANCELLED;
-    this.addEvent(new OrderCancelled(this.id, this.status));
+    this.addEvent(
+      new OrderCancelled(this.id, this.status, this.event_spot_id),
+    );
   }
 
   toJSON() {
@@ -75,6 +84,7 @@ export class Order extends AggregateRoot {
       amount: this.amount,
       customer_id: this.customer_id.value,
       event_spot_id: this.event_spot_id.value,
+      status: OrderStatus[this.status],
     };
   }
 }
